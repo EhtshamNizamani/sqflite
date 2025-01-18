@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite_crud/providers/item_provider.dart';
+import 'package:sqflite_crud/screens/item_list_screen.dart';
 import 'package:sqflite_crud/services/locator.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const Text("Testing"),
+        home: const ItemListScreen(),
       ),
     );
   }

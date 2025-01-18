@@ -45,14 +45,20 @@ class DBHelper {
     return itemList;
   }
 
-  Future<int> updateItem(Item item, int id) async {
+  Future<int> updateItem(Map<String, dynamic> item, int id) async {
     final db = await database;
 
     return await db.update(
       'items',
-      item.toMap(),
+      item,
       where: 'id = ? ',
       whereArgs: [id],
     );
+  }
+
+  Future<int> deleteItem(int id) async {
+    final db = await database;
+
+    return await db.delete('items', where: 'id = ?', whereArgs: [id]);
   }
 }
