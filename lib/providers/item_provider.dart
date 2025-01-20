@@ -1,10 +1,26 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:sqflite_crud/data/db_helper.dart';
 import 'package:sqflite_crud/models/item.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ItemProvider with ChangeNotifier {
   List<Item> itemList = <Item>[];
   final DBHelper _dbHelper = DBHelper();
+  Uint8List? bytes;
+
+  Future<void> pickImage() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      // Convert the image to a byte array (Uint8List)
+      bytes = await image.readAsBytes();
+
+      // Insert into the database
+    }
+  }
 
   Future<void> fetchItem() async {
     try {
@@ -17,8 +33,15 @@ class ItemProvider with ChangeNotifier {
 
   Future<void> addItem() async {
     try {
-      await _dbHelper.insertItem(
-          Item(title: "This is Title", description: "This is descrption"));
+      // Create an Item with the image bytes
+      Item newItem = Item(
+        title: 'Item Title',
+        description: 'Item Description',
+        image: bytes,
+      );
+
+      await _dbHelper.insertItem(newItem);
+
       await fetchItem();
     } catch (e) {
       print("Error in InsertItem: $e");
@@ -29,8 +52,7 @@ class ItemProvider with ChangeNotifier {
     try {
       final row = await _dbHelper.deleteItem(id);
       print("This item is delte at row number $row");
-      fetchItem();
-      notifyListeners();
+      await fetchItem();
     } catch (e) {
       print("Error in deleteItem: $e");
     }
@@ -44,8 +66,7 @@ class ItemProvider with ChangeNotifier {
       };
 
       await _dbHelper.updateItem(updatedItem, item.id!);
-      fetchItem();
-      fetchItem();
+      await fetchItem();
       notifyListeners();
     } catch (e) {
       print("Error in updateItem: $e");

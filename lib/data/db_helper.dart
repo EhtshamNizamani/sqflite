@@ -21,13 +21,21 @@ class DBHelper {
 
     return await openDatabase(
       dbPath,
-      version: 1,
+      version: 2,
       onCreate: (db, version) async {
-        await db
-            .execute('''CREATE TABLE items(id INTEGER PRIMARY KEY AUTOINCREMENT,
-           title TEXT NOT NULL,
-           description TEXT
-          )''');
+        await db.execute('''
+          CREATE TABLE items (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            description TEXT,
+            image BLOB 
+          )
+        ''');
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await db.execute('ALTER TABLE items ADD COLUMN image BLOB');
+        }
       },
     );
   }

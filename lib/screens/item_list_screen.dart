@@ -28,6 +28,11 @@ class ItemListScreen extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            if (item.image != null)
+                              SizedBox(
+                                  height: 48,
+                                  width: 48,
+                                  child: Image.memory(item.image!)),
                             Column(
                               children: [
                                 Text(item.title),
@@ -61,9 +66,19 @@ class ItemListScreen extends StatelessWidget {
                 },
               );
       }),
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        context.read<ItemProvider>().addItem();
-      }),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+              backgroundColor: Colors.pinkAccent,
+              onPressed: () {
+                context.read<ItemProvider>().pickImage();
+              }),
+          FloatingActionButton(onPressed: () {
+            context.read<ItemProvider>().addItem();
+          }),
+        ],
+      ),
     );
   }
 }
